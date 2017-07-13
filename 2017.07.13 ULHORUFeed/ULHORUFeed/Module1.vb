@@ -43,8 +43,9 @@ Module Module1
     Dim gblOBX As Integer = 0
     Dim gblStrApp As String = ""
     Dim gblStrSecurity As String = ""
-    Public objIniFile As New iniFile("c:\newfeeds\HL7Mapper.ini") '20151222
-    'Public objIniFile As New iniFile("C:\KY2 Test Environment\HL7Mapper.ini")
+    Public objIniFile As New iniFile("c:\newfeeds\HL7Mapper.ini") '20151222 'Prod
+    'Public objIniFile As New iniFile("C:\ULHTest\ULHMapper.ini") 'Local
+    'Public objIniFile As New iniFile("C:\KY2 Test Environment\HL7Mapper.ini") 'Local
     Dim strInputDirectory As String = ""
     Dim strOutputDirectory As String = ""
     Public thefile As FileInfo
@@ -74,8 +75,8 @@ Module Module1
         Dim dirs As String() = Directory.GetFiles(strOutputDirectory, "NVP.*")
 
         'declarations and external assignments for database operations
-        'connectionString = "server=10.48.64.5\sqlexpress;database=ITWULHCernerTest;uid=sysmax;pwd=Condor!"
-        connectionString = "server=10.48.242.249,1433;database=McareULHCerner;uid=sysmax;pwd=Condor!" '20151222
+        'connectionString = "server=10.48.64.5\sqlexpress;database=ITWULHCernerTest;uid=sysmax;pwd=Condor!" Test
+        connectionString = "server=10.48.242.249,1433;database=McareULHCerner;uid=sysmax;pwd=Condor!" '20151222 Prod
 
         Dim myConnection As New SqlConnection(connectionString)
         Dim objCommand As New SqlCommand
@@ -506,7 +507,7 @@ Module Module1
 
                     Else ' add record
                         masterID = 0
-                        sql = "select id from [test_master] where PlacerOrderNumber = " & dictNVP.Item("Placer Order Number") & " "
+                        sql = "select id from [test_master] where PlacerOrderNumber = '" & dictNVP.Item("Placer Order Number") & "' "
                         sql = sql & "AND patient_accountNumber = '" & extractPanum(dictNVP.Item("Patient_AccountNumber")) & "'"
                         objCommand.CommandText = sql
                         myConnection.Open()
@@ -685,7 +686,7 @@ Module Module1
                     Else 'If updateResults Then
 
                         masterID = 0
-                        sql = "select id from [test_master] where PlacerOrderNumber = " & dictNVP.Item("Placer Order Number") & " "
+                        sql = "select id from [test_master] where PlacerOrderNumber = '" & dictNVP.Item("Placer Order Number") & "' "
                         sql = sql & "AND patient_accountNumber = '" & extractPanum(dictNVP.Item("Patient_AccountNumber")) & "'"
                         objCommand.CommandText = sql
                         myConnection.Open()

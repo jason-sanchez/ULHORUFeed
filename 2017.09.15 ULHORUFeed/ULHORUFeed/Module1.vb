@@ -43,9 +43,21 @@ Module Module1
     Dim gblOBX As Integer = 0
     Dim gblStrApp As String = ""
     Dim gblStrSecurity As String = ""
-    Public objIniFile As New iniFile("c:\newfeeds\HL7Mapper.ini") '20151222 'Prod
-    'Public objIniFile As New iniFile("C:\ULHTest\ULHMapper.ini") 'Local
+
+    'Private fullinipath As String = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory, "..\..\..\Configs\ULH\HL7Mapper.ini")) ' New test
+    Private fullinipath As String = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory, "..\..\..\..\..\..\..\..\..\Configs\ULH\HL7Mapper.ini")) ' local
+    Public objIniFile As New iniFile(fullinipath) '20140817 - New Test
+    'Public objIniFile As New iniFile("c:\newfeeds\HL7Mapper.ini") '20151222 'Prod
+    'Public objIniFile As New iniFile("C:\FeedTester\Configs\ULH\HL7Mapper.ini") 'Test
     'Public objIniFile As New iniFile("C:\KY2 Test Environment\HL7Mapper.ini") 'Local
+
+    'Private fullconinipath As String = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory, "..\..\..\Configs\ULH\ConnProd.ini")) 'New Test
+    Private fullconinipath As String = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory, "..\..\..\..\..\..\..\..\..\Configs\ULH\ConnProd.ini")) 'local
+    Public conIniFile As New iniFile(fullconinipath) '20140805 New Test
+    'Public conIniFile As New iniFile("C:\KY2 Test Environment\KY2ConnDev.ini") 'Local
+    'Public conIniFile As New iniFile("C:\FeedTester\Configs\ULH\ConnProd.ini") 'Test
+    'Public conIniFile As New iniFile("C:\newfeeds\KY2ConnProd.ini") '20140805 Prod
+
     Dim strInputDirectory As String = ""
     Dim strOutputDirectory As String = ""
     Public thefile As FileInfo
@@ -66,17 +78,20 @@ Module Module1
         Dim sql As String = ""
 
         'setup directory
+        Dim dir As String = objIniFile.GetString("Settings", "directory", "(none)") & ":\"
+        Dim parent As String = objIniFile.GetString("Settings", "parentDir", "(none)") & "\"
 
-        strOutputDirectory = objIniFile.GetString("ULHORU", "ULHORUoutputdirectory", "(none)") '
-        strMapperFile = objIniFile.GetString("ULHORU", "ULHORUmapper", "(none)")
+        strOutputDirectory = dir & parent & objIniFile.GetString("ULHORU", "ULHORUoutputdirectory", "(none)") '
+        strMapperFile = dir & parent & objIniFile.GetString("ULHORU", "ULHORUmapper", "(none)")
         '20140205 - add logfile location
-        strLogDirectory = objIniFile.GetString("Settings", "logs", "(none)")
+        strLogDirectory = dir & parent & objIniFile.GetString("Settings", "logs", "(none)")
 
         Dim dirs As String() = Directory.GetFiles(strOutputDirectory, "NVP.*")
 
         'declarations and external assignments for database operations
         'connectionString = "server=10.48.64.5\sqlexpress;database=ITWULHCernerTest;uid=sysmax;pwd=Condor!" Test
-        connectionString = "server=10.48.242.249,1433;database=McareULHCerner;uid=sysmax;pwd=Condor!" '20151222 Prod
+        'connectionString = "server=10.48.242.249,1433;database=McareULHCerner;uid=sysmax;pwd=Condor!" '20151222 Prod
+        connectionString = conIniFile.GetString("Strings", "ULHORU", "(none)")
 
         Dim myConnection As New SqlConnection(connectionString)
         Dim objCommand As New SqlCommand
